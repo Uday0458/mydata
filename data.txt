@@ -1,0 +1,178 @@
+Name of Region: US-East-1 (North-Virginia)
+
+EC2:-
+
+Instances- All instances have Tags..
+  
+AMI - Tags are not available for all AMIs.
+
+Elastic Load Balancer - Available
+
+EBS  Volumes - Tags are not available for all volumes.
+
+Snapshots- Tags are not available for all Snapshots.
+
+Elastic IPs - available
+
+Security Groups - No tags for all Security Groups
+
+Target groups - No tags for all Target groups.
+
+Network interfaces - No tags for all Network Interfaces.
+
+  Instance Name        			Instance Id       		Volume Id
+  
+  Windows-for-Raghu                 i-0256a781430980bf4           vol-0bb53de733e262125
+  fhir.drajer.com				i-0ce274bbf0506f6d8		vol-05eeb49d0beb74130
+  eCRNow-Server-Arun		      i-0227b2011eb583199           vol-04945257f7936b152
+ eCRNow-Connectathon-Win            i-0c86648dcb899d4b0		vol-07988576dfe5a911c
+  demo-XyHub				i-0b37593393b2edb3b		vol-0a698fad1a40b50be	
+  bastion-NV				i-085dde2a98246218e           vol-0ad74e5d1fbf6f19d
+  Auth-FHIR-Win-Arun			i-06e3722b1ffd6bdf5           vol-08bf44ee1f9bf3ced
+
+
+Lambda -
+
+functions: No Tags
+
+S3 -
+
+Buckets:no product tags for all buckets
+         
+Objects:No Tags
+
+VPC -
+
+Subnets -
+
+
+Route Tables & Internet Gateway -
+
+RDS -
+
+DynamoDB -
+
+Aurora Clusters -
+
+IAM
+Roles   : 
+Users   :
+Policies:
+
+
+************************************************************************************************
+************************************************************************************************
+\**********************************************************************************************/
+
+
+
+AP-South-1 (Mumbai)
+
+EC2
+
+
+Instances- All instances have Tags..
+
+Instance Name		Instance Id			Volume Id
+
+jenkins-poc			i-0dce7ff69d3d654d7     vol-02299241b2a02eb81
+Main-Jenkins-Server	i-0ef3fe0d1dbf4c51c	vol-0736e2e112df268ee
+PROD-Daydrop		i-0eaf4886e8911788a	vol-0d385d35379eb737b
+tally_updated		i-0eafd71c50510ef10     vol-05d0d39d8e0b49694
+UAT-Daydrop			i-021d1f8307c92831b     vol-0487d8cd582797550
+xyram-website		i-0393a4799023251c7	vol-0db3e1be7a87cc9a3
+
+
+AMI - Tags are not available for below AMIs.
+     
+      ami-09009f920b32acd3e
+      ami-04941aa845cc7ce27
+	ami-002fc3ccd74e42936
+
+	ami-025b694a431a2ba2f
+	ami-0df0e2f449b50d4d3
+	ami-0437f031003940458
+	ami-0a50a86dae0bf34ee
+      ami-0efd477ebbb2e15fc 
+	ami-05af45d768cb1fd33 
+	ami-08eef6aa1bad9647d 
+	ami-0221601d6c6affb59
+	ami-027cd225f0ec3ac55
+	ami-045dbffc00dfe76fb
+	ami-02d18b7fee2707f4f 
+	ami-07ad86d5f5a931f35
+
+Elastic Load Balancer - Available
+
+EBS  Volumes - Tags are not available for below volumes.
+
+    
+Snapshots- Tags are available for below Snapshots,remaining snapshots are not having tags.
+
+   snap-03a39cec671e94f49
+   snap-02ac49b4e90c157e3
+
+Elastic IPs - available
+
+Security Groups - No tags for all Security Groups
+
+Target groups - No tags for all Target groups.
+
+Network interfaces - No tags for all Network Interfaces
+
+
+
+Lambda -
+
+Functions: No tags for all functions
+
+
+
+
+S3 -
+
+Buckets:
+no product tags for all buckets
+
+
+EFS- na
+
+System Manager - available
+
+
+
+VPC -
+
+Subnets -subnet-094bfa57acb568275
+	   subnet-091ef9eb394125308
+	   subnet-0552f48072bb67ac3
+	   subnet-07226ad4bb40b651a	
+	   subnet-0c557e19012bf00cf
+         subnet-072a7ff22b95179a7
+
+
+
+Route Tables : Available
+
+Internet Gateway - Available
+
+IAM Roles & Policies-
+
+Users:  No tags
+
+Roles: 
+
+
+KMS Keys-
+
+CLoud watch Alarms- 
+
+CloudTrail Logs -
+
+CloudFormation Stacks -
+
+CodePipeline and CodeBuild -
+
+
+
+

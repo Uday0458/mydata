@@ -1,0 +1,142 @@
+# This AWS SAM template has been generated from your function's configuration. If
+# your function has one or more triggers, note that the AWS resources associated
+# with these triggers aren't fully specified in this template and include
+# placeholder values. Open this template in AWS Infrastructure Composer or your
+# favorite IDE and modify it to specify a serverless application with other AWS
+# resources.
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: An AWS Serverless Application Model template describing your function.
+Resources:
+  AutoBackupEC2Instance:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: .
+      Description: ''
+      MemorySize: 128
+      Timeout: 60
+      Handler: lambda_function.lambda_handler
+      Runtime: python3.12
+      Architectures:
+        - x86_64
+      EphemeralStorage:
+        Size: 512
+      EventInvokeConfig:
+        MaximumEventAgeInSeconds: 21600
+        MaximumRetryAttempts: 2
+      PackageType: Zip
+      Policies:
+        - Statement:
+            - Effect: Allow
+              Action:
+                - ec2:DescribeInstances
+                - ec2:DescribeImages
+                - ec2:CreateImage
+                - ec2:CreateTags
+                - ec2:DeregisterImage
+                - ec2:DeleteSnapshot
+                - logs:CreateLogGroup
+                - logs:CreateLogStream
+                - logs:PutLogEvents
+              Resource: '*'
+      RecursiveLoop: Terminate
+      SnapStart:
+        ApplyOn: None
+      Events:
+        Schedule1:
+          Type: Schedule
+          Properties:
+            Schedule: cron(0 18 ? * MON *)
+      RuntimeManagementConfig:
+        UpdateRuntimeOn: Auto
+///************************************************************************////
+////////////****************************//////////////////////////////////////
+
+
+import boto3
+import os
+from datetime import datetime
+
+# Define the tag
+TAG_KEY = 'AutoAmi'  # tag key
+TAG_VALUE = 'Yes'    # tag value
+
+# Get current date in ISO format (YYYY-MM-DD)
+date_today = datetime.now()
+timestamp = date_today.strftime('%Y-%m-%d')
+print('Today: ', timestamp)
+
+def lambda_handler(event, context):
+    # Retrieve the region dynamically from the Lambda environment variable
+    REGION = os.environ['AWS_REGION']
+
+    ec2 = boto3.client('ec2', region_name=REGION)
+
+    try:
+        # Step 1: Describe instances using tag filters
+        describe_params = {
+            'Filters': [
+                {
+                    'Name': f'tag:{TAG_KEY}',
+                    'Values': [TAG_VALUE]
+                }
+            ]
+        }
+        describe_data = ec2.describe_instances(**describe_params)
+
+        # Extract instance IDs and associated Name tags from all instances matching the tag
+        instances = [instance for reservation in describe_data['Reservations'] for instance in reservation['Instances']]
+
+        if not instances:
+            print("No instances found with the specified tag.")
+            return
+
+        print(f"Found {len(instances)} instances with the tag {TAG_KEY}: {TAG_VALUE}")
+
+        # Step 2: Create AMIs for each instance
+        for instance in instances:
+            instance_id = instance['InstanceId']
+
+            # Retrieve the instance's Name tag if it exists
+            instance_name = "Unnamed-Instance"
+            name_tag = next((tag['Value'] for tag in instance['Tags'] if tag['Key'] == 'Name'), None)
+            if name_tag:
+                instance_name = name_tag
+
+            print(f"Creating AMI for instance with ID: {instance_id} and Name: {instance_name}")
+
+            image_name_string = f'auto-ami-{instance_name}-{timestamp}'
+            create_image_params = {
+                'Description': "Created from Lambda using instance tag",
+                'InstanceId': instance_id,
+                'Name': image_name_string,
+                'NoReboot': True,
+                'TagSpecifications': [
+                    {
+                        'ResourceType': 'image',  # Tagging the AMI
+                        'Tags': [
+                            {'Key': 'Name', 'Value': f'{timestamp}-{instance_name}'},
+                            {'Key': 'CreatedBy', 'Value': 'Lambda'},
+                            {'Key': 'RetentionPeriod', 'Value': '15'}
+                        ]
+                    },
+                    {
+                        'ResourceType': 'snapshot',  # Tagging associated snapshots
+                        'Tags': [
+                            {'Key': 'Name', 'Value': f'{timestamp}-{instance_name}'},
+                            {'Key': 'CreatedBy', 'Value': 'Lambda'},
+                            {'Key': 'RetentionPeriod', 'Value': '15'}
+                        ]
+                    }
+                ]
+            }
+
+            try:
+                create_image_data = ec2.create_image(**create_image_params)
+                print(f"Successfully created AMI for instance {instance_id}: AMI ID {create_image_data['ImageId']}")
+
+            except Exception as ami_error:
+                print(f"Error creating AMI for instance {instance_id}: {str(ami_error)}")
+
+    except Exception as err:
+        print(f"Error retrieving instances or creating AMIs: {str(err)}")
